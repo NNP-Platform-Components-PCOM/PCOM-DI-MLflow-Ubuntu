@@ -18,12 +18,12 @@ LABEL org.opencontainers.image.title="pcom-di-mlflow-ubuntu" \
       org.opencontainers.image.revision="${VCS_REF}" \
       org.opencontainers.image.created="${BUILD_DATE}"
 
-RUN pip install --no-cache-dir mlflow[extras]==2.16.2 boto3 psycopg2-binary
+RUN pip install --no-cache-dir "mlflow[extras]==2.16.2" boto3 psycopg2-binary "sqlalchemy<2.0"
 
-RUN mkdir -p /mlflow/artifacts
+RUN mkdir -p /mlflow/mlruns /mlflow/artifacts
 
 EXPOSE 5000
 
 CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", \
-     "--backend-store-uri", "sqlite:////mlflow/mlflow.db", \
+     "--backend-store-uri", "file:///mlflow/mlruns", \
      "--default-artifact-root", "/mlflow/artifacts"]
